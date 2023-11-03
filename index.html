@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Block Builder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #canvas {
+            position: relative;
+            width: 900px;
+            height: 800px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .block {
+            position: absolute;
+            background-color: #33ff57;
+            cursor: pointer;
+        }
+
+        #menu {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            background-color: #f5f5f5;
+            border: 0px solid #ccc;
+            padding: 30px;
+            width: 100px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        #menu.show {
+            display: flex;
+        }
+
+        #color-picker {
+            width: 50px;
+            margin-bottom: 10px;
+        }
+
+        #size-picker {
+            width: 50px;
+            margin-bottom: 10px;
+        }
+
+        #toggle-menu-button {
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <center>
+    <div id="canvas"></div>
+      <br>
+    <div id="menu" class="animate__animated animate__fadeInDown">
+        <p>Color</p><input type="color" id="color-picker" value="#33ff57">
+        <p>Size</p><input type="number" id="size-picker" value="100">
+    </div>
+    <button id="toggle-menu-button">Builder Menu</button>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const menu = document.getElementById('menu');
+        const colorPicker = document.getElementById('color-picker');
+        const sizePicker = document.getElementById('size-picker');
+        const toggleMenuButton = document.getElementById('toggle-menu-button');
+
+        toggleMenuButton.addEventListener('click', () => {
+            menu.classList.toggle('show');
+        });
+
+        colorPicker.addEventListener('change', () => {
+            if (selectedBlock) {
+                selectedBlock.style.backgroundColor = colorPicker.value;
+            }
+        });
+
+        sizePicker.addEventListener('input', () => {
+            if (selectedBlock) {
+                selectedBlock.style.width = sizePicker.value + 'px';
+                selectedBlock.style.height = sizePicker.value + 'px';
+            }
+        });
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (e.buttons === 1) {
+                const x = e.clientX - canvas.getBoundingClientRect().left;
+                const y = e.clientY - canvas.getBoundingClientRect().top;
+                createBlock(x, y);
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (e.buttons === 1) {
+                const x = e.clientX - canvas.getBoundingClientRect().left;
+                const y = e.clientY - canvas.getBoundingClientRect().top;
+                createBlock(x, y);
+            }
+        });
+
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            if (selectedBlock) {
+                canvas.removeChild(selectedBlock);
+                selectedBlock = null;
+            }
+        });
+
+        let selectedBlock = null;
+
+        function createBlock(x, y) {
+            const block = document.createElement('div');
+            block.classList.add('block');
+            block.style.left = x - sizePicker.value / 2 + 'px';
+            block.style.top = y - sizePicker.value / 2 + 'px';
+            block.style.width = sizePicker.value + 'px';
+            block.style.height = sizePicker.value + 'px';
+            block.style.backgroundColor = colorPicker.value;
+            canvas.appendChild(block);
+            selectedBlock = block;
+        }
+    </script>
+</center>
+</body>
+</html>
